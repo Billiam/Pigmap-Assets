@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
+<link rel="stylesheet" href="style.css" type="text/css" />
+<script type="text/javascript">
+  var config = {
+    path:        '.',
+    fileExt:     'png',
+    tileSize:     {tileSize},
+    defaultZoom:  {baseZoom}-3,
+    B:            {B},
+    T:            {T},
+    maxZoom:      {baseZoom},
+    showPlaces:   true,
+    showDate:     true
+    placeGroupIcons : {},
+  };
+  var lastUpdated = {lastRun};
+</script>
+<script type="text/javascript"
+    src="http://maps.google.com/maps/api/js?sensor=false">
+</script>
+<script type="text/javascript" src="helper/utils.js"></script>
+<script type="text/javascript" src="helper/map.js"></script>
+<script type="text/javascript" src="helper/player_markers.js"></script>
+<script type="text/javascript" src="helper/place_markers.js"></script>
+<script type="text/javascript">
+  var markerLists = {};
+  
+  var MCMapType = new google.maps.ImageMapType(MCMapOptions);
+  MCMapType.name = "MC Map";
+  MCMapType.alt = "Minecraft Map";
+  MCMapType.projection = new MCMapProjection();
+  
+  var map;
+
+  
+  function initialize() {
+    var mapOptions = {
+      zoom: config.defaultZoom,
+      center: new google.maps.LatLng(0.5, 0.5),
+      navigationControl: true,
+      scaleControl: false,
+      mapTypeControl: false,
+      streetViewControl: false,
+      mapTypeId: 'mcmap'
+    };
+    map = new google.maps.Map(document.getElementById("mcmap"), mapOptions);
+    
+       
+    // Now attach the coordinate map type to the map's registry
+    map.mapTypes.set('mcmap', MCMapType);
+  
+    // We can now set the map to use the 'coordinate' map type
+    map.setMapTypeId('mcmap');
+	    
+    if(config.showDate) {
+      var mapDate = new dateUpdater(lastUpdated*1000);
+    }
+    
+    if(config.showPlaces) {
+      markerLists.places = new places(config.placeGroupIcons);
+    }
+    if(config.showPlayers) {
+      markerLists.players = new playerMarkers();
+    }
+  
+  }
+</script>
+</head>
+<body onload="initialize()">
+  <div id="mcmap" style="width:100%; height:100%"></div>
+  <div id="updateTime"></div>
+</body>
+</html>
