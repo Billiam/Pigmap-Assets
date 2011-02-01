@@ -62,7 +62,7 @@ var places = markerList.extend({
         
         var icon = This.getIcon(group);
 
-        var marker = new mapPlace(this.stripColor(title), converted, group, icon);
+        var marker = new mapPlace(This.stripColor(title), converted, group, icon);
         This.addMarker(title, marker);
       }
     }, 'text');
