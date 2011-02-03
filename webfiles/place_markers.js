@@ -7,7 +7,8 @@ var places = markerList.extend({
     'outpost' : 'http://google-maps-icons.googlecode.com/files/tower.png',
     'project' : 'http://google-maps-icons.googlecode.com/files/construction.png',
     'mine'    : 'http://google-maps-icons.googlecode.com/files/mine.png',
-    'farm'    : 'http://google-maps-icons.googlecode.com/files/farm.png'
+    'farm'    : 'http://google-maps-icons.googlecode.com/files/farm.png',
+    'cave'    : 'http://google-maps-icons.googlecode.com/files/spelunking.png'
   },
   DEFAULT_ICON : 'http://google-maps-icons.googlecode.com/files/fortress.png',
   
