@@ -46,15 +46,44 @@ var playerMarkers = markerList.extend({
 
 
 var mapPlayer = mapItem.extend({
-  config : {animate:true, animateDuration:14000},
+  //default config
+  config : {
+    animate:true,
+    animateDuration:14000,
+    icon: {
+      border:1,
+      borderColor: 'fff',
+      format: 'flat',
+      size: 1
+    },
+    infoWindow: {
+      border:0,
+      borderColor: 'fff',
+      format: 'flat',
+      size: 5
+    }
+  },
+ 
   init : function(itemData, coordinates) {
     this._super(itemData, coordinates);
     this.title = itemData.msg;
   },
+
   getIcon : function() {
-    return 'helper/player-avatar.php?s=1&format=flat&bc=fff&bw=1&player=' + encodeURIComponent(this.getTitle());
+    return this.getPlayerImageUrl(this.config.icon);
+  },
+  
+  getPlayerImageUrl : function(settings) {
+    return 'helper/player-avatar.php?s='+ settings.size +
+           '&format=' + settings.format +
+           '&bc=' + settings.borderColor +
+           '&bw=' + settings.border +
+           '&player=' + encodeURIComponent(this.getTitle());
   },
   getInfoWindowMarkup : function() {
-    return '<div class="infoWindow" style="width: 300px;height:200px;"><img src="helper/player-avatar.php?format=flat&s=5&player=' +encodeURIComponent(this.getTitle())  + '&s=8"/><h1>' + this.getTitle() + '</h1></div>';
+    return '<div class="infoWindow" style="width: 300px;height:200px;">' +
+             '<img src="' + this.getPlayerImageUrl(this.config.infoWindow) + '"/>' +
+             '<h1>' + this.getTitle() + '</h1>' +
+           '</div>';
   }
 });
