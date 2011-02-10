@@ -135,8 +135,8 @@ var markerList = Class.extend({
   fetchMarkers : function(){},
   
   deleteMarkerByIndex : function(index) {
-    this.list[name].delete();
-    delete this.list[name];
+    this.list[index].delete();
+    delete this.list[index];
   },
   
   addMarker : function(name, markerData) {
@@ -147,75 +147,86 @@ var markerList = Class.extend({
     this.list[name].prepare();
   },
   deleteAll : function() {
-    for(name in this.list) {
-      this.list[name].delete();
+    for(index in this.list) {
+      this.list[index].delete();
     }
-    
     this.list = {};
   }
 });
 
 var mapItem = Class.extend({
   itemData : null,
-  name : null,
+  title : null,
+  icon : null,
   infoWindow : null,
   latLng : null,
+  config : {},
   marker : null,
-  animate: false,
-  animationDuration : null,
-  
+
+  setConfig : function(config) {
+    this.config = config;
+  },
   init : function(itemData, latLng) {
     this.itemData = itemData;
     this.latLng = latLng;
   },
+  getTitle : function() {
+    return this.title;
+  },
   setIcon : function(icon) {
     this.icon = icon;
+  },
+  getIcon : function() {
+    return this.icon;
   },
   setMarker : function(marker) {
     this.marker = marker;
   },
-  
+
   delete : function() {
     if ( this.marker) {
       this.marker.setMap(null);
     }
   },
-  
   moveTo : function(position) {
     var This = this;
-    
-    if ( this.animate ) {
-      jQuery({wa:This.marker.position.wa, ya:This.marker.position.ya}).animate({wa:position.wa, ya:position.ya}, {
-        duration:This.animationDuration,
+
+    if ( this.config.animate ) {
+      jQuery({lat:This.marker.getPosition().lat(), lng:This.marker.getPosition().lng()}).animate({lat:position.lat(), lng:position.lng()}, {
+        duration:This.config.animateDuration,
         step: function() {
-          var latlng = new google.maps.LatLng(this.wa, this.ya);
-          This.marker.setPosition(latlng);
+          var latlng = new google.maps.LatLng(this.lat, this.lng);
+          This.setPosition(latlng);
         }
       });
     } else {
-      This.marker.setPosition(position);
+      this.setPosition(position);
     }
   },
-  
+
+  setPosition : function(position) {
+    this.latLng = position;
+    this.marker.setPosition(position);
+  },
+
   getMarker : function() {
     if ( ! this.marker) {
       var marker = new google.maps.Marker({
-        position: converted,
+        position: this.latLng,
         map: map,
-        title: item.msg,
-        icon: this.icon,
+        animation: this.config.animate ? google.maps.Animation.DROP : null,
+        title: this.getTitle(),
+        icon: this.getIcon(),
         visible: true,
         zIndex: 999
       });
-      
       this.setMarker(marker);
     }
     return this.marker;
   },
-  
-  getInfoWindowMarkup : function() {
-    return '<div class="infoWindow" style="width: 300px"><img src="player-avatar.php?format=flat&s=5&player=' + encodeURIComponent(this.name)  + '&s=8"/><h1>' + this.name + '</h1></div>';
 
+  getInfoWindowMarkup : function() {
+    return '<div class="infoWindow" style="width: 300px"></div>';
   },
   prepare : function() {
     if ( ! this.infowindow) {

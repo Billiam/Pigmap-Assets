@@ -3,7 +3,7 @@ var playerMarkers = markerList.extend({
   config : {duration:15000, animate:true},
 
   fetchMarkers : function() {
-    
+
     var This = this;
     var playerNames = {};
   
@@ -36,6 +36,7 @@ var playerMarkers = markerList.extend({
   deleteMarker : function(name) {
     this._super.deleteMarkerByIndex(name);
   },
+
   init : function() {
     var This = this;
     This.interval = setInterval(function(){This.fetchMarkers()}, This.config.duration);
@@ -43,77 +44,17 @@ var playerMarkers = markerList.extend({
   }
 });
 
-var mapPlayer = Class.extend({
-  itemData : null,
-  name : null,
-  infoWindow : null,
+
+var mapPlayer = mapItem.extend({
   config : {animate:true, animateDuration:14000},
-  
-  marker : null,
-
-  setConfig : function(config) {
-    this.config = config;
-  },
-
   init : function(itemData, coordinates) {
-    this.itemData = itemData;
-    this.latLng = coordinates;
-    this.name = itemData.msg;
+    this._super(itemData, coordinates);
+    this.title = itemData.msg;
   },
-
-  setMarker : function(marker) {
-    this.marker = marker;
+  getIcon : function() {
+    return 'helper/player-avatar.php?s=1&format=flat&bc=fff&bw=1&player=' + encodeURIComponent(this.getTitle());
   },
-
-  delete : function() {
-    if ( this.marker) {
-      this.marker.setMap(null);
-    }
-  },
-
-  moveTo : function(position) {
-    var This = this;
-    
-    if ( this.config.animate ) {
-      jQuery({wa:This.marker.position.wa, ya:This.marker.position.ya}).animate({wa:position.wa, ya:position.ya}, {
-        duration:This.config.animateDuration,
-        step: function() {
-          var latlng = new google.maps.LatLng(this.wa, this.ya);
-          This.marker.setPosition(latlng);
-        }
-      });
-    } else {
-      This.marker.setPosition(position);
-    }
-  },
-  
-  getMarker : function() {
-    if ( ! this.marker) {
-      var marker =  new google.maps.Marker({
-        position: this.latLng,
-        animation: this.config.animate ? google.maps.Animation.DROP : null,
-        map: map,
-        title: this.name,
-        icon: 'helper/player-avatar.php?s=1&format=flat&bc=fff&bw=1&player=' + encodeURIComponent(this.name), //replace with path=<username>
-        visible: true,
-        zIndex: 999
-      });
-      
-      this.setMarker(marker);
-    }
-    return this.marker;
-  },
-  
-  prepare : function() {
-    if ( ! this.infowindow) {
-      var This = this;
-      var c = '<div class="infoWindow" style="width: 300px"><img src="helper/player-avatar.php?format=flat&s=5&player=' +encodeURIComponent(this.name)  + '&s=8"/><h1>' + this.name + '</h1></div>';
-      this.infowindow = new google.maps.InfoWindow({content: c});
-      var marker = this.getMarker();
-      
-      google.maps.event.addListener(marker, 'click', function() {
-        This.infowindow.open(map, marker);
-      });
-    }
+  getInfoWindowMarkup : function() {
+    return '<div class="infoWindow" style="width: 300px;height:200px;"><img src="helper/player-avatar.php?format=flat&s=5&player=' +encodeURIComponent(this.getTitle())  + '&s=8"/><h1>' + this.getTitle() + '</h1></div>';
   }
 });

@@ -75,62 +75,20 @@ var places = markerList.extend({
     this.list = [];
   }
 });
-
-var mapPlace = Class.extend({
-  itemData : null,
-  icon : null,
-  name : null,
-  latLng : null,
-  infoWindow : null,
-  
-  marker : null,
-  
+var mapPlace = mapItem.extend({
+  group : null,
   init : function(name, latLng, group, icon) {
-    this.name = name;
-    this.latLng = latLng;
+    this._super({name:name}, latLng);
+    this.title = name;
+    this.setGroup(group);
+    this.setIcon(icon);
+  },
+  getGroup : function() {
+    return this.group;
+  },
+  setGroup : function(group) {
     this.group = group;
-    this.icon = icon;
   },
-  setMarker : function(marker) {
-    this.marker = marker;
-  },
-  delete : function() {
-    if ( this.marker) {
-      this.marker.setMap(null);
-    }
-  },
-  moveTo : function(position) {
-    var This = this;
-
-    if ( this.config.animate ) {
-      jQuery({wa:This.marker.position.wa, ya:This.marker.position.ya}).animate({wa:position.wa, ya:position.ya}, {
-        duration:This.config.animateDuration,
-        step: function() {
-          var latlng = new google.maps.LatLng(this.wa, this.ya);
-          This.marker.setPosition(latlng);
-        }
-      });
-    } else {
-      This.marker.setPosition(position);
-    }
-  },
-  
-  getMarker : function() {
-    if ( ! this.marker) {
-      var marker =  new google.maps.Marker({
-        position: this.latLng,
-        map: map,
-        title: this.name,
-        icon: this.icon,
-        visible: true,
-        zIndex: 999
-      });
-      
-      this.setMarker(marker);
-    }
-    return this.marker;
-  },
-  
   prepare : function() {
     this.getMarker();
   }
