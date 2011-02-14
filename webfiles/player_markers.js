@@ -25,7 +25,7 @@ var playerMarkers = markerList.extend({
         playerNames[name] = 1;
       }
     
-      for(name in this.list) {
+      for(name in This.list) {
         if ( ! playerNames[name]) {
           This.deleteMarker[name];
         }
@@ -34,7 +34,7 @@ var playerMarkers = markerList.extend({
   },
   
   deleteMarker : function(name) {
-    this._super.deleteMarkerByIndex(name);
+    this.deleteMarkerByIndex(name);
   },
 
   init : function() {
