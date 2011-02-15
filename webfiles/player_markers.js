@@ -27,7 +27,7 @@ var playerMarkers = markerList.extend({
     
       for(name in This.list) {
         if ( ! playerNames[name]) {
-          This.deleteMarker[name];
+          This.deleteMarker(name);
         }
       }
     });
